@@ -10,8 +10,8 @@ function createGraph() {
     const sequenceInput = document.getElementById('sequenceInput').value;
     const errorField = document.getElementById('errorField');
     errorField.innerText = '';
-    let G = new Graph(graphInput, sequenceInput, errorField);
-    if(G.verifyInput) {
-        G.graphify();
+    let g = new G(graphInput, sequenceInput, errorField);
+    if(g.verifyInput) {
+        g.graphify();
     }
 }

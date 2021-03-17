@@ -1,4 +1,4 @@
-class Graph {
+class G {
     constructor(graphInput, sequenceInput, errorElement) {
         this.graphInput = graphInput;
         this.sequenceInput = sequenceInput;
