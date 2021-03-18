@@ -22,11 +22,14 @@ function createGraph() {
             outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph G does not have an Eulerian cycle.</li></ul>";
         }
         if(G.verifySequenceInput()) {
-            const isInputEulerianPath = G.isEulerianPath()
-            if(isInputEulerianPath) {
-                outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The sequence input P is an Eulerian path.</li></ul>";
+            if(G.hasEulerianPath()) {
+                if(G.isEulerianPath()) {
+                    outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The sequence input P is an Eulerian path.</li></ul>";
+                } else {
+                    outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The sequence input P is not an Eulerian path.</li></ul>";
+                }
             } else {
-                outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The sequence input P is not an Eulerian path.</li></ul>";
+                outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph G does not have any Eulerian paths.</li></ul>";
             }
         }
     }

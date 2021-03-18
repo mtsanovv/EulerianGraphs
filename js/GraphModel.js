@@ -71,7 +71,7 @@ class GraphModel {
     }
     //implement the depth-first search to traverse the graph
     dfs(root, checked) {
-        //mark the root as checked
+        //mark the element as checked
         checked[root] = true;
 
         //do the same for all the vertices adjacent to this vertex
@@ -134,11 +134,30 @@ class GraphModel {
         }
         return false; //semi-eulerian and non-eulerian mean there's no eulerian cycle
     }
-    //check if the path in the sequence input is actually Eulerian
-    isEulerianPath() {
+    //check if there's an Eulerian path in the graph
+    hasEulerianPath() {
         if(!this.verticesConnected()) {
             return false;
         }
+        //count of vertices with odd degrees
+        let odd = 0;
+        for(let i = 0; i < this.G.length; i++) {
+            if(Array.isArray(this.G[i]) && this.G[i].length % 2 != 0) {
+                odd++;
+            }
+        }
+
+        if(odd != 2) {
+            return false; //only when there are 2 odd vertices that's the only case when we can have an Eulerian path
+        }
+        return true;
+    }
+    //check if the path in the sequence input is actually Eulerian
+    isEulerianPath() {
+        if(!this.hasEulerianPath()) {
+            return false; //no point to check if there's no chance of Eulerian paths
+        }
+        
         const P = this.sequenceInput.split(/\s+/);
         let connectionsArray = [];
         const edges = this.graphInput.split(/\n+/);
