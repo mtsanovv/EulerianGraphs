@@ -17,9 +17,17 @@ function createGraph() {
         G.graphify();
         const hasEulerianCycle = G.hasEulerianCycle()
         if(hasEulerianCycle) {
-            outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph has an Eulerian cycle.</li></ul>";
+            outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G has an Eulerian cycle.</li></ul>";
         } else {
-            outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph does not have an Eulerian cycle.</li></ul>";
+            outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph G does not have an Eulerian cycle.</li></ul>";
+        }
+        if(G.verifySequenceInput()) {
+            const isInputEulerianPath = G.isEulerianPath()
+            if(isInputEulerianPath) {
+                outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The sequence input P is an Eulerian path.</li></ul>";
+            } else {
+                outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The sequence input P is not an Eulerian path.</li></ul>";
+            }
         }
     }
 }

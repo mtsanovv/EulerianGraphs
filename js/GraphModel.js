@@ -33,6 +33,23 @@ class GraphModel {
         }
         return true;
     }
+    //verify the sequence input
+    verifySequenceInput() {
+        if(!this.sequenceInput.length) {
+            return false; //do not display any error, it's fine, it's an optional parameter
+        }
+        const vertices = this.sequenceInput.split(/\s+/);
+        for(const vertex of vertices) {
+            if(!vertex.length) {
+                this.errorField.innerText = 'Invalid sequence of vertices submitted: one of the vertices is not an integer. Please also check for any extra and/or trailing whitespaces.';
+                return false;
+            } else if(!Array.isArray(this.G[Number(vertex)])) {
+                this.errorField.innerText = 'Invalid sequence of vertices submitted: one of the vertices is not a part of the graph.';
+                return false;
+            }
+        }
+        return true;
+    }
     //convert the graph input into an actual graph
     graphify() {
         const edges = this.graphInput.split(/\n+/);
@@ -117,5 +134,41 @@ class GraphModel {
         }
         return false; //semi-eulerian and non-eulerian mean there's no eulerian cycle
     }
+    //check if the path in the sequence input is actually Eulerian
+    isEulerianPath() {
+        if(!this.verticesConnected()) {
+            return false;
+        }
+        const P = this.sequenceInput.split(/\s+/);
+        let connectionsArray = [];
+        const edges = this.graphInput.split(/\n+/);
+        for(const edge of edges) {
+            const vertices = edge.split(/\s+/);
+            if(vertices.length != 2) {
+                continue;
+            }
+            if(!Array.isArray(connectionsArray[Number(vertices[0])])) {
+                connectionsArray[Number(vertices[0])] = [];
+            }
+            connectionsArray[Number(vertices[0])].push(Number(vertices[1]));
 
+            if(!Array.isArray(connectionsArray[Number(vertices[1])])) {
+                connectionsArray[Number(vertices[1])] = [];
+            }
+            connectionsArray[Number(vertices[1])].push(Number(vertices[0]));
+        }
+        for(let i = 0; i < P.length - 1; i++) {
+            const ce = Number(P[i]);
+            const ne = Number(P[i + 1]);
+            const ine = connectionsArray[ce].indexOf(ne);
+            const ice = connectionsArray[ne].indexOf(ce);
+            if(ice == -1 && ine == -1) {
+                // the edge is really repeating...
+                return false;
+            }
+            connectionsArray[ce].splice(ine, 1);
+            connectionsArray[ne].splice(ice, 1);
+        }
+        return true;
+    }
 }
