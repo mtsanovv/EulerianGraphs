@@ -157,36 +157,36 @@ class GraphModel {
         if(!this.hasEulerianPath()) {
             return false; //no point to check if there's no chance of Eulerian paths
         }
-        
+
         const P = this.sequenceInput.split(/\s+/);
-        let connectionsArray = [];
+        let G = [];
         const edges = this.graphInput.split(/\n+/);
         for(const edge of edges) {
             const vertices = edge.split(/\s+/);
             if(vertices.length != 2) {
                 continue;
             }
-            if(!Array.isArray(connectionsArray[Number(vertices[0])])) {
-                connectionsArray[Number(vertices[0])] = [];
+            if(!Array.isArray(G[Number(vertices[0])])) {
+                G[Number(vertices[0])] = [];
             }
-            connectionsArray[Number(vertices[0])].push(Number(vertices[1]));
+            G[Number(vertices[0])].push(Number(vertices[1]));
 
-            if(!Array.isArray(connectionsArray[Number(vertices[1])])) {
-                connectionsArray[Number(vertices[1])] = [];
+            if(!Array.isArray(G[Number(vertices[1])])) {
+                G[Number(vertices[1])] = [];
             }
-            connectionsArray[Number(vertices[1])].push(Number(vertices[0]));
+            G[Number(vertices[1])].push(Number(vertices[0]));
         }
         for(let i = 0; i < P.length - 1; i++) {
             const ce = Number(P[i]);
             const ne = Number(P[i + 1]);
-            const ine = connectionsArray[ce].indexOf(ne);
-            const ice = connectionsArray[ne].indexOf(ce);
+            const ine = G[ce].indexOf(ne);
+            const ice = G[ne].indexOf(ce);
             if(ice == -1 && ine == -1) {
                 // the edge is really repeating...
                 return false;
             }
-            connectionsArray[ce].splice(ine, 1);
-            connectionsArray[ne].splice(ice, 1);
+            G[ce].splice(ine, 1);
+            G[ne].splice(ice, 1);
         }
         return true;
     }
