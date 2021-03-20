@@ -4,6 +4,8 @@ class GraphModel {
         this.sequenceInput = sequenceInput;
         this.errorField = errorField;
         this.G = [];
+        this.tours = [];
+        this.H;
     }
     //verify the graph input
     verifyInput() {
@@ -68,6 +70,7 @@ class GraphModel {
             }
             this.G[Number(vertices[1])].push(Number(vertices[0]));
         }
+        return !Boolean(this.G.length); //return true if it's an edgeless graph
     }
     //implement the depth-first search to traverse the graph
     dfs(root, checked) {
@@ -189,5 +192,105 @@ class GraphModel {
             G[ne].splice(ice, 1);
         }
         return true;
+    }
+    //a method to mark all edges as unvisited for Hierholzer
+    markAllUnvisited() {
+        for(let i = 0; i < this.G.length; i++) {
+            if(Array.isArray(this.G[i])) {
+                if(!Array.isArray(this.H.checked[i])) {
+                    this.H.checked[i] = [];
+                    for(let j = 0; j < this.G[i].length; j++) {
+                        this.H.checked[i][this.G[i][j]] = false;
+                    }
+                }
+            }
+        }
+    }
+    //a method to mark an edge as visited for Hierholzer
+    visitEdge(node1, node2) {
+        this.H.checked[node1][node2] = true;
+        this.H.checked[node2][node1] = true;
+        if(!this.H.subtour.length) {
+            this.H.subtour.push(...[node1, node2]);
+        } else {
+            this.H.subtour.push(node2);
+        }
+    }
+    //a method to complete a subtour for Hierholzer
+    completeSubtour(element) {
+        if(this.H.subtour.length && element == this.H.subtour[0]) {
+            //subtour is a circle, it can be pushed back to tours
+            if(!this.tours[this.tours.length - 1].length) {
+                this.tours[this.tours.length - 1].push(...this.H.subtour);
+            } else {
+                const indexOfBeginNode = this.tours[this.tours.length - 1].lastIndexOf(this.H.subtour[0]);
+                this.tours[this.tours.length - 1].splice(indexOfBeginNode + 1, 0, ...this.H.subtour);
+                this.tours[this.tours.length - 1].splice(indexOfBeginNode, 1);
+            }
+            return true;
+        }
+        return false;
+    }
+    //a method to check if an Eulerian cycle has been found for Hierholzer
+    eulerianCycleFound() {
+        for(let i = 0; i < this.H.checked.length; i++) {
+            if(Array.isArray(this.H.checked[i])) {
+                for(let j = 0; j < this.H.checked[i].length; j++) {
+                    if(this.H.checked[i][j] == false) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    //find unvisited edge for Hierholzer
+    findUnvisitedEdge() {
+        for(let i = 0; i < this.H.checked.length; i++) {
+            if(Array.isArray(this.H.checked[i])) {
+                for(let j = 0; j < this.H.checked[i].length; j++) {
+                    if(this.H.checked[i][j] == false) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+    //a method that implements Hierholzer's algorithm
+    hierholzer(element) {
+        if(this.completeSubtour(element)) {
+            this.H.subtour = [];
+            if(this.eulerianCycleFound()) {
+                return;
+            } else {
+                this.hierholzer(this.findUnvisitedEdge());
+            }
+        }
+        let newNode = -1;
+        for(let i = 0; i < this.G[element].length; i++) {
+            if(this.H.checked[element][this.G[element][i]] == false) {
+                newNode = this.G[element][i];
+                this.visitEdge(element, this.G[element][i]);
+                break;
+            }
+        }
+        if(newNode == -1) {
+            return; //hierholzer is done
+        }
+        this.hierholzer(newNode);
+    }
+    //find all eulerian cycles
+    findAllEulerian() {
+        for(let i = 0; i < this.G.length; i++) {
+            //find an eulerian cycle for each vertex
+            if(Array.isArray(this.G[i])) {
+                this.H = new Hierholzer();
+                this.tours[i] = []; //mark a new tour!
+                this.markAllUnvisited();
+                this.hierholzer(i);
+            }
+        }
+        return this.tours;
     }
 }
