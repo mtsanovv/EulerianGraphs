@@ -281,7 +281,7 @@ class GraphModel {
         this.hierholzer(newNode);
     }
     //find all eulerian cycles
-    findAllEulerian() {
+    findAllEulerianCycles() {
         for(let i = 0; i < this.G.length; i++) {
             //find an eulerian cycle for each vertex
             if(Array.isArray(this.G[i])) {
@@ -289,6 +289,44 @@ class GraphModel {
                 this.tours[i] = []; //mark a new tour!
                 this.markAllUnvisited();
                 this.hierholzer(i);
+            }
+        }
+        return this.tours;
+    }
+    //a method that implements Hierholzer's algorithm for Eulerian paths
+    hierholzerPath(element) {
+        const unvisitedEdgeNode = this.findUnvisitedEdge();
+        if(this.completeSubtour(element)) {
+            this.H.subtour = [];
+            this.hierholzerPath(unvisitedEdgeNode);
+        }
+
+        if(unvisitedEdgeNode == -1) {
+            return; //hierholzer's done, that's it.
+        }
+
+        let newNode = -1;
+        for(let i = 0; i < this.G[element].length; i++) {
+            if(this.H.checked[element][this.G[element][i]] == false) {
+                newNode = this.G[element][i];
+                this.visitEdge(element, this.G[element][i]);
+                break;
+            }
+        }
+        if(newNode == -1) {
+           this.hierholzerPath(unvisitedEdgeNode);
+        }
+        this.hierholzerPath(newNode);
+    }
+    //find all eulerian paths
+    findAllEulerianPaths() {
+        for(let i = 0; i < this.G.length; i++) {
+            //find an eulerian path for each vertix with odd degree
+            if(Array.isArray(this.G[i]) && this.G[i].length % 2 != 0) {
+                this.H = new Hierholzer();
+                this.tours[i] = []; //mark a new tour!
+                this.markAllUnvisited();
+                this.hierholzerPath(i);
             }
         }
         return this.tours;

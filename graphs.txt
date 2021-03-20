@@ -1,4 +1,4 @@
-Simple graph:
+Simple graph with Eulerian cycle:
 1 0
 2 0
 1 2
@@ -6,7 +6,7 @@ Simple graph:
 0 4
 3 4
 
-A more complex graph for Hierholzer:
+A more complex graph for Hierholzer with Eulerian cycle:
 1 2
 2 3
 3 4
@@ -24,7 +24,7 @@ A more complex graph for Hierholzer:
 11 12
 12 3
 
-The previous graph, but with all nodes from 0 taken:
+The previous graph, but with all nodes from 0 taken with Eulerian cycle:
 0 1
 1 2
 2 3
@@ -41,3 +41,12 @@ The previous graph, but with all nodes from 0 taken:
 10 2
 10 11
 11 2
+
+A graph with Eulerian paths:
+0 1
+1 2
+2 3
+3 4
+4 5
+5 0
+4 1
