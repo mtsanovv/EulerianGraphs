@@ -286,7 +286,7 @@ class GraphModel {
             //find an eulerian cycle for each vertex
             if(Array.isArray(this.G[i])) {
                 this.H = new Hierholzer();
-                this.tours[i] = []; //mark a new tour!
+                this.tours[i] = []; //mark a new tour
                 this.markAllUnvisited();
                 this.hierholzer(i);
             }
@@ -310,6 +310,9 @@ class GraphModel {
             if(this.H.checked[element][this.G[element][i]] == false) {
                 newNode = this.G[element][i];
                 this.visitEdge(element, this.G[element][i]);
+                //do not break, attempt a new tour on each branch division
+                //perhaps backup the old eulerian cycle stuff
+                //get rid of the Hierholzer class and go for the simple recursive stuff, only tours is to be recorded
                 break;
             }
         }
@@ -324,7 +327,7 @@ class GraphModel {
             //find an eulerian path for each vertix with odd degree
             if(Array.isArray(this.G[i]) && this.G[i].length % 2 != 0) {
                 this.H = new Hierholzer();
-                this.tours[i] = []; //mark a new tour!
+                this.tours.push([]); //mark a new tour
                 this.markAllUnvisited();
                 this.hierholzerPath(i);
             }
