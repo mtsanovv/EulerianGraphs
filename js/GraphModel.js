@@ -156,12 +156,15 @@ class GraphModel {
         return true;
     }
     //check if the path in the sequence input is actually Eulerian
-    isEulerianPath() {
+    isEulerianPath(passedP) {
         if(!this.hasEulerianPath()) {
             return false; //no point to check if there's no chance of Eulerian paths
         }
 
-        const P = this.sequenceInput.split(/\s+/);
+        let P = this.sequenceInput.split(/\s+/);
+        if(passedP) {
+            P = passedP;
+        }
         let G = [];
         const edges = this.graphInput.split(/\n+/);
         for(const edge of edges) {
@@ -310,9 +313,6 @@ class GraphModel {
             if(this.H.checked[element][this.G[element][i]] == false) {
                 newNode = this.G[element][i];
                 this.visitEdge(element, this.G[element][i]);
-                //do not break, attempt a new tour on each branch division
-                //perhaps backup the old eulerian cycle stuff
-                //get rid of the Hierholzer class and go for the simple recursive stuff, only tours is to be recorded
                 break;
             }
         }
@@ -330,6 +330,9 @@ class GraphModel {
                 this.tours.push([]); //mark a new tour
                 this.markAllUnvisited();
                 this.hierholzerPath(i);
+                if(!this.isEulerianPath(this.tours[i])) {
+                    this.tours.pop();
+                }
             }
         }
         return this.tours;
