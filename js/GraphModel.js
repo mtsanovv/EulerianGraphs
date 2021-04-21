@@ -167,6 +167,9 @@ class GraphModel {
         }
         let G = [];
         const edges = this.graphInput.split(/\n+/);
+        if(edges.length != P.length - 1) {
+            return false; // we need all the edges to be part of the eulerian path
+        }
         for(const edge of edges) {
             const vertices = edge.split(/\s+/);
             if(vertices.length != 2) {
@@ -297,29 +300,14 @@ class GraphModel {
         return this.tours;
     }
     //a method that implements Hierholzer's algorithm for Eulerian paths
-    hierholzerPath(element) {
-        const unvisitedEdgeNode = this.findUnvisitedEdge();
-        if(this.completeSubtour(element)) {
-            this.H.subtour = [];
-            this.hierholzerPath(unvisitedEdgeNode);
-        }
-
-        if(unvisitedEdgeNode == -1) {
-            return; //hierholzer's done, that's it.
-        }
-
-        let newNode = -1;
+    findPath(element) {
+        this.tours[this.tours.length - 1].push(element);
         for(let i = 0; i < this.G[element].length; i++) {
             if(this.H.checked[element][this.G[element][i]] == false) {
-                newNode = this.G[element][i];
                 this.visitEdge(element, this.G[element][i]);
-                break;
+                this.findPath(this.G[element][i]);
             }
         }
-        if(newNode == -1) {
-           this.hierholzerPath(unvisitedEdgeNode);
-        }
-        this.hierholzerPath(newNode);
     }
     //find all eulerian paths
     findAllEulerianPaths() {
@@ -329,10 +317,12 @@ class GraphModel {
                 this.H = new Hierholzer();
                 this.tours.push([]); //mark a new tour
                 this.markAllUnvisited();
-                this.hierholzerPath(i);
-                if(!this.isEulerianPath(this.tours[i])) {
-                    this.tours.pop();
-                }
+                this.findPath(i);
+            }
+        }
+        for(let i = 0; i < this.tours.length; i++) {
+            if(!this.isEulerianPath(this.tours[i])) {
+                this.tours.pop();
             }
         }
         return this.tours;
