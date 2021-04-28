@@ -5,20 +5,20 @@
     <title>EulerianGraphs</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 		<link rel="stylesheet" href="css/main.css">
-    <script src="js/raphael.min.js"></script>
-    <script src="js/dracula.min.js"></script>
-    <script src="js/Hierholzer.js"></script>
+    <script src="js/Tour.js"></script>
     <script src="js/GraphModel.js"></script>
+    <script src="js/UndirectedGraphModel.js"></script>
+    <script src="js/DirectedGraphModel.js"></script>
     <script src="js/DrawGraph.js"></script>
     <script src="js/index.js"></script>
   </head>
   <body>
     <div class="row">
       <div class="column" style="background-color: rgba(204, 204, 204, 0.5); height: 50px;">
-        <div style="text-align: center;">Enter the edges of the graph G, one per row, in the format "p q" (without the quotes), where p and q are two vertices:</div>
+        <div style="text-align: center;">Enter the edges of the graph G below, one per row, in the format "p q" (without the quotes), where p and q are two vertices. In an undirected graph, the sequence p q forms an edge (both p➔q and q➔p), whereas in a directed graph the sequence p q means p➔q:</div>
       </div>
       <div class="column" style="background-color: rgb(211, 211, 211, 0.3); height: 50px;">
-        <div style="text-align: center;">Enter a sequence of vertices P, separated by spaces, to be checked if it's an Eulerian path (not required): </div>
+        <div style="text-align: center;">Enter a sequence of vertices P (this field is not required), separated by spaces to be checked if it's an Eulerian path. In an undirected graph, the sequence p q forms an edge (both p➔q and q➔p), whereas in a directed graph the sequence p q means p➔q: </div>
       </div>
     </div>
     <div class="row">
@@ -29,11 +29,18 @@
         <input onkeyup="graphInputChanged(this)" onchange="graphInputChanged(this)" type="text" id="sequenceInput" name="sequenceInput" style="width: 100%;" placeholder=""></textarea>
       </div>
     </div>
+    <div class="row">
+      <div class="column" style="background-color: rgba(204, 204, 204, 0.5); height: 50px;">
+        <label for="isDirected">Is the graph directed?</label>
+        <input type="checkbox" id="isDirected">
+      </div>
+      <div class="column" style="background-color: rgb(211, 211, 211, 0.3); height: 50px;"></div>
+    </div>
     <div class="row" style="background-color: rgb(0, 0, 0, 0.2);">
       <div id="errorField" style="text-align: center; color: rgb(201, 0, 0);"></div>
     </div>
     <div class="row" style="background-color: rgb(0, 0, 0, 0.2);">
-      <button onclick="createGraph()" style="width: 100%">Submit</button>
+      <button onclick="createGraph()" style="width: 100%">Graphify!</button>
     </div>
     <div class="row" style="background-color: rgb(0, 0, 0, 0.2); margin-top: -16px;">
       <div id="output" style="text-align: center;"></div>

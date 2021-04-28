@@ -10,13 +10,21 @@ function createGraph() {
     const sequenceInput = document.getElementById('sequenceInput').value;
     const errorField = document.getElementById('errorField');
     const outputField = document.getElementById('output');
+    const isDirected = document.getElementById('isDirected').checked;
     errorField.innerText = '';
     outputField.innerHTML = '';
-    let gm = new GraphModel(graphInput, sequenceInput, errorField);
+
+    let gm;
+    if(isDirected) {
+        gm = new DirectedGraphModel(graphInput, sequenceInput, errorField);
+    } else {
+        gm = new UndirectedGraphModel(graphInput, sequenceInput, errorField);
+    }
+
     if(gm.verifyInput()) {
         const isEdgelessGraph = gm.graphify();
         if(gm.hasEulerianCycle()) {
-            outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian cycles.</li></ul>";
+            outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian cycle(s).</li></ul>";
             if(!isEdgelessGraph) {
                 const eulerianCycles = gm.findAllEulerianCycles();
                 outputField.innerHTML += "<p style='text-align: center;'><div>All Eulerian cycles:</div>";
@@ -38,7 +46,7 @@ function createGraph() {
                     outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The sequence input P is not an Eulerian path.</li></ul>";
                 }
             }
-            outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian paths.</li></ul>";
+            outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian path(s).</li></ul>";
             const eulerianPaths = gm.findAllEulerianPaths();
             outputField.innerHTML += "<p style='text-align: center;'><div>All Eulerian paths:</div>";
             for(let i = 0; i < eulerianPaths.length; i++) {
