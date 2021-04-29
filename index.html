@@ -5,7 +5,6 @@
     <title>EulerianGraphs</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 		<link rel="stylesheet" href="css/main.css">
-    <script src="js/Tour.js"></script>
     <script src="js/GraphModel.js"></script>
     <script src="js/UndirectedGraphModel.js"></script>
     <script src="js/DirectedGraphModel.js"></script>
@@ -14,13 +13,12 @@
   </head>
   <body>
     <div class="row">
-      <div class="column" style="background-color: rgba(204, 204, 204, 0.5); height: 50px;">
+      <div class="column" style="background-color: rgba(204, 204, 204, 0.5); height: 75px;">
         <div style="text-align: center;">Enter the edges of the graph G below, one per row, in the format "p q" (without the quotes), where p and q are two vertices. In an undirected graph, the sequence p q forms an edge (both p➔q and q➔p), whereas in a directed graph the sequence p q means p➔q:</div>
       </div>
-      <div class="column" style="background-color: rgb(211, 211, 211, 0.3); height: 50px;">
+      <div class="column" style="background-color: rgb(211, 211, 211, 0.3); height: 75px;">
         <div style="text-align: center;">Enter a sequence of vertices P (this field is not required), separated by spaces to be checked if it's an Eulerian path. In an undirected graph, the sequence p q forms an edge (both p➔q and q➔p), whereas in a directed graph the sequence p q means p➔q: </div>
       </div>
-    </div>
     <div class="row">
       <div class="column" style="background-color: rgba(204, 204, 204, 0.5); height: 150px;">
         <textarea onkeyup="graphInputChanged(this)" onchange="graphInputChanged(this)" id="graphInput" name="graphInput" style="width: 100%; height: 120px; overflow: auto; resize: none;" placeholder=""></textarea>
@@ -45,8 +43,6 @@
     <div class="row" style="background-color: rgb(0, 0, 0, 0.2); margin-top: -16px;">
       <div id="output" style="text-align: center;"></div>
     </div>
-    <p>find all the possible eulerian cycles and eulerian paths in undirected graph and refactor the code, based on what was done for the directed graph</p>
-    <p>the thing above could be done after the directed graph stuff is done and the directed graph stuff could be reused to create it properly</p>
     <p>after that test for the smallest graph if taking it, swapping the element 0 with 7 (undirected graph) still works</p>
     <p>test all paths & cycles with non-numeric order of graph nodes</p>
     <p>VivaGraphJS/GraphDracula for visualization</p>
