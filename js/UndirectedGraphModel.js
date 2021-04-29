@@ -23,6 +23,9 @@ class UndirectedGraphModel extends GraphModel {
             }
             this.G[Number(vertices[1])].push(Number(vertices[0]));
         }
+        if(edges.length > 7) {
+            this.limitEulerianTours = true;
+        }
         return !Boolean(this.G.length); //return true if it's an edgeless graph
     }
 
@@ -71,5 +74,100 @@ class UndirectedGraphModel extends GraphModel {
         checked[node2][node1] = true;
     }
 
-    
+    //a method to check if an Eulerian cycle has been found for Hierholzer
+    eulerianCycleFound(checked) {
+        for(let i = 0; i < checked.length; i++) {
+            if(Array.isArray(checked[i])) {
+                for(let j = 0; j <checked[i].length; j++) {
+                    if(checked[i][j] == false) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    //a method that implements Hierholzer's algorithm
+    hierholzer(element, initial, checked, subtour, tour) {
+        if(!this.limitEulerianTours) {
+            //if no limit to eulerian tours has been applied, use the parent method
+            super.hierholzer(element, initial, checked, subtour, tour);
+            return;
+        }
+
+        if(this.completeSubtour(element, checked, subtour, tour)) {
+            subtour = [];
+            if(this.eulerianCycleFound(checked)) {
+                return;
+            } else {
+                this.hierholzer(this.findUnvisitedEdge(checked), false, checked, subtour, tour);
+            }
+        }
+
+        let newNode = -1;
+
+        for(let i = 0; i < this.G[element].length; i++) {
+            if(checked[element][this.G[element][i]] == false) {
+                newNode = this.G[element][i];
+                this.visitEdge(element, this.G[element][i], checked, subtour);
+                break;
+            }
+        }
+
+        if(newNode == -1) {
+            return; //hierholzer is done
+        }
+
+        this.hierholzer(newNode, false, checked, subtour, tour);
+    }
+
+    //find all Eulerian tours - cycles or paths
+    findAllEulerianTours() {
+        if(!this.limitEulerianTours) {
+            //if no limit to eulerian tours has been applied, use the parent method
+            super.findAllEulerianTours();
+            return;
+        }
+        for(let i = 0; i < this.G.length; i++) {
+            //find all Еulerian tours for each vertex
+            if(Array.isArray(this.G[i])) {
+                const checked = [];
+                this.markAllUnvisited(checked);
+                this.tours.push([]); //mark a new tour
+                this.hierholzer(i, true, checked, [], this.tours[this.tours.length - 1]);
+            }
+        }
+    }
+
+    //a method that implements Hierholzer's algorithm for Eulerian paths
+    findPath(element, checked) {
+        this.tours[this.tours.length - 1].push(element);
+        for(let i = 0; i < this.G[element].length; i++) {
+            if(checked[element][this.G[element][i]] == false) {
+                this.visitEdge(element, this.G[element][i], checked, []);
+                this.findPath(this.G[element][i], checked);
+            }
+        }
+    }
+
+    //find all eulerian paths
+    findAllEulerianPaths() {
+        for(let i = 0; i < this.G.length; i++) {
+            //find an eulerian path for each vertix with odd degree
+            if(Array.isArray(this.G[i]) && this.G[i].length % 2 != 0) {
+                const checked = [];
+                this.markAllUnvisited(checked);
+                this.tours.push([]); //mark a new tour
+                this.findPath(i, checked);
+            }
+        }
+        for(let i = 0; i < this.tours.length; i++) {
+            if(!this.isEulerianPath(this.tours[i])) {
+                this.tours.pop();
+            }
+        }
+        return this.tours;
+    }
+
 }

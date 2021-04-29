@@ -4,6 +4,7 @@ class GraphModel {
         this.sequenceInput = sequenceInput;
         this.errorField = errorField;
         this.G = [];
+        this.limitEulerianTours = false;
     }
     //verify the graph input
     verifyInput() {

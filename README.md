@@ -10,5 +10,6 @@ A JS app that deals with Eulerian cycles and paths. It works for both undirected
     > - finds all Eulerian cycles in the graph (if any are available);
     > - visualizes the graph, the paths and the cycles.
 - Unfortunately, it may not be able to find all the possible Eulerian cycles and paths, especially in larger undirected graphs. [This explains why.](https://en.wikipedia.org/wiki/Eulerian_path#Complexity_issues)
+- The graphs.txt file contains some graphs that can be used for toying with the tool.
 
 *M. Tsanov, 2021*
