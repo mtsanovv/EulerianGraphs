@@ -132,10 +132,24 @@ class DirectedGraphModel extends GraphModel {
         }
     }
 
+    //find unvisited edge for Hierholzer
+    findUnvisitedEdge(checked) {
+        for(let i = 0; i < checked.length; i++) {
+            if(Array.isArray(checked[i])) {
+                for(let j = 0; j < checked[i].length; j++) {
+                    if(checked[i][j] == false) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
     //a method to complete a subtour for Hierholzer
-    completeSubtour(element, subtour, tour) {
-        if(subtour.length && element == subtour[0]) {
-            //subtour is a circle, it can be pushed back to the tour
+    completeSubtour(element, checked, subtour, tour) {
+        if(subtour.length && element == subtour[0] || this.findUnvisitedEdge(checked) == -1) {
+            //subtour is a circle or a path, it can be pushed back to the tour
             if(!tour.length) {
                 tour.push(...subtour);
             } else {
@@ -150,7 +164,7 @@ class DirectedGraphModel extends GraphModel {
 
     //a method that implements Hierholzer's algorithm
     hierholzer(element, initial, checked, subtour, tour) {
-        if(!initial && this.completeSubtour(element, subtour, tour)) {
+        if(!initial && this.completeSubtour(element, checked, subtour, tour)) {
             subtour = [];
         }
 
@@ -200,7 +214,7 @@ class DirectedGraphModel extends GraphModel {
             this.visitEdge(tour[i], tour[i + 1], checked, []); //visit the edges that are part of the tour
         }
         for(let i = 0; i < checked.length; i++) {
-            // if not an array, continue
+            //if not an array, continue
             if(!Array.isArray(checked[i])) {
                 continue;
             }
@@ -215,18 +229,81 @@ class DirectedGraphModel extends GraphModel {
         return true;
     }
 
-    //find all eulerian cycles
-    findAllEulerianCycles() {
+    //check if the path in the sequence input is actually Eulerian
+    isEulerianPath(passedP) {
+        if(!this.hasEulerianPath()) {
+            return false; //no point to check if there's no chance of Eulerian paths
+        }
+
+        let P;
+
+        if(passedP) {
+            P = passedP;
+        } else {
+            P = this.sequenceInput.split(/\s+/);
+            //cast all numbers from the sequence input from strings to numbers
+            for(let i = 0; i < P.length; i++) {
+                P[i] = Number(P[i]);
+            }
+        }
+        
+        const checked = [];
+        this.markAllUnvisited(checked);
+
+        for(let i = 0; i < P.length - 1; i++) {
+            //if the edge doesn't exist in the graph but is a part of the path, then the cycle is invalid
+            if(this.G[P[i]].indexOf(P[i + 1]) == -1) {
+                return false;
+            }
+            this.visitEdge(P[i], P[i + 1], checked, []); //visit the edges that are part of the path
+        }
+        for(let i = 0; i < checked.length; i++) {
+            //if not an array, continue
+            if(!Array.isArray(checked[i])) {
+                continue;
+            }
+
+            for(let j = 0; j < checked[i].length; j++) {
+                //if the edge has not been visited by the loop above, then this is surely not a path
+                if(checked[i][j] == false) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    //find all Eulerian tours - cycles or paths
+    findAllEulerianTours() {
         for(let i = 0; i < this.G.length; i++) {
-            //find all eulerian cycles for each vertex
+            //find all Еulerian tours for each vertex
             if(Array.isArray(this.G[i])) {
                 this.hierholzer(i, true);
             }
         }
+    }
+
+    //find all Еulerian cycles
+    findAllEulerianCycles() {
+        this.findAllEulerianTours();
 
         const validTours = [];
         for(let i = 0; i < this.tours.length; i++) {
             if(this.isEulerianCycle(this.tours[i])) {
+                validTours.push(this.tours[i]);
+            }
+        }
+        this.tours = validTours;
+        return this.tours;
+    }
+
+    //find all Еulerian paths
+    findAllEulerianPaths() {
+        this.findAllEulerianTours();
+
+        const validTours = [];
+        for(let i = 0; i < this.tours.length; i++) {
+            if(this.isEulerianPath(this.tours[i])) {
                 validTours.push(this.tours[i]);
             }
         }
