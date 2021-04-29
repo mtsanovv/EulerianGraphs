@@ -8,24 +8,6 @@ Simple graph with Eulerian cycle:
 3 4
 
 A more complex graph for Hierholzer with Eulerian cycle:
-1 2
-2 3
-3 4
-4 1
-1 5
-5 6
-6 1
-1 7
-7 8
-8 1
-9 1
-9 10
-10 1
-11 3
-11 12
-12 3
-
-The previous graph, but with all nodes from 0 taken with Eulerian cycle:
 0 1
 1 2
 2 3
@@ -115,3 +97,56 @@ The graph above, but with 0 as 7:
 6 4
 4 5
 5 7
+
+Yet another graph with Eulerian cycle (with a bidirectional edge):
+1 2
+2 3
+3 1
+3 4
+4 3
+4 1
+1 5
+5 4
+
+Bonus graph with Eulerian cycle:
+1 7
+7 5
+5 4
+4 6
+6 1
+2 7
+7 3
+3 2
+
+A graph that contains Eulerian paths:
+0 4
+4 2
+2 0
+2 1
+1 6
+4 3
+3 5
+5 6
+3 1
+5 2
+1 5
+6 3
+
+A yet another graph that contains Eulerian paths:
+0 2
+2 1
+1 3
+3 0
+6 7
+7 8
+8 9
+9 6
+6 3
+3 4
+
+A very small graph that contains Eulerian paths:
+1 2
+2 3
+3 1
+3 4
+4 2

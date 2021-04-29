@@ -80,6 +80,34 @@ class DirectedGraphModel extends GraphModel {
         return true;
     }
 
+    //a method that checks if there's at least one Eulerian path in the graph
+    hasEulerianPath() {
+        let inDegreeMoreThanOutDegreeVertexCount = 0;
+        let outDegreeMoreThanInDegreeVertexCount = 0;
+        for(let i = 0; i < this.G.length; i++) {
+            if(!Array.isArray(this.G[i])) {
+                continue;
+            }
+            if(this.G[i].length == this.inDegrees[i] + 1) {
+                inDegreeMoreThanOutDegreeVertexCount++;
+            } else if(this.G[i].length + 1 == this.inDegrees[i]) {
+                outDegreeMoreThanInDegreeVertexCount++;
+            } else if(this.G[i].length != this.inDegrees[i]) {
+                //if a vertex is not one of the two "special ones" it should have in degree equal to its out degree
+                return false;
+            }
+        }
+
+        if(inDegreeMoreThanOutDegreeVertexCount != 1 || outDegreeMoreThanInDegreeVertexCount != 1) {
+            //A directed graph has an Eulerian path only if:
+            //there's only one vertex for which indegree + 1 == outdegree
+            //there's only one vertex for which outdegree + 1 == indegree
+            //all other vertices have indegree == outdegree
+            return false;
+        }
+        return true;
+    }
+
     //a method to mark all edges as unvisited for Hierholzer
     markAllUnvisited(checked) {
         for(let i = 0; i < this.G.length; i++) {
