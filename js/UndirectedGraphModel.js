@@ -217,7 +217,7 @@ class UndirectedGraphModel extends GraphModel {
         return this.tours;
     }
 
-    //a method that implements Hierholzer's algorithm for Eulerian paths
+    //a method that visits edges recursively, following a path
     findPath(element) {
         this.tours[this.tours.length - 1].push(element);
         for(let i = 0; i < this.G[element].length; i++) {

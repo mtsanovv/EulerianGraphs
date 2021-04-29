@@ -27,7 +27,7 @@ function createGraph() {
             outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian cycle(s).</li></ul>";
             if(!isEdgelessGraph) {
                 const eulerianCycles = gm.findAllEulerianCycles();
-                outputField.innerHTML += "<p style='text-align: center;'><div>All Eulerian cycles:</div>";
+                outputField.innerHTML += "<p style='text-align: center;'><div>All Eulerian cycles found:</div>";
                 for(let i = 0; i < eulerianCycles.length; i++) {
                     if(Array.isArray(eulerianCycles[i])) {
                         outputField.innerHTML += "<div style='font-weight: bold;'>" + eulerianCycles[i].join("➔") + "</div>";
@@ -48,7 +48,7 @@ function createGraph() {
             }
             outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian path(s).</li></ul>";
             const eulerianPaths = gm.findAllEulerianPaths();
-            outputField.innerHTML += "<p style='text-align: center;'><div>All Eulerian paths:</div>";
+            outputField.innerHTML += "<p style='text-align: center;'><div>All Eulerian paths found:</div>";
             for(let i = 0; i < eulerianPaths.length; i++) {
                 if(Array.isArray(eulerianPaths[i])) {
                     outputField.innerHTML += "<div style='font-weight: bold;'>" + eulerianPaths[i].join("➔") + "</div>";

@@ -69,6 +69,19 @@ Bonus graph with Eulerian paths:
 4 1
 3 5
 
+Yet another bonus graph with Eulerian paths:
+1 2
+2 4
+4 5
+5 6
+6 3
+3 1
+1 5
+2 3
+2 5
+4 3
+4 6
+
 
 -------DIRECTED GRAPHS-------
 Simple graph with Eulerian cycle:
@@ -78,3 +91,15 @@ Simple graph with Eulerian cycle:
 0 3
 3 4
 4 0
+
+A more complex graph with Eulerian cycles:
+0 1
+1 2
+2 0
+2 3
+3 4
+4 2
+0 6
+6 4
+4 5
+5 0

@@ -1,8 +1,6 @@
 # EulerianGraphs
 A JS app that deals with Eulerian cycles and paths. It works for both undirected and directed graphs.
 
-# DO MY BEST TO FIND ALL PATHS & CYCLES FOR DIRECTED GRAPHS
-
 ## Notes
 - It was created for an assignment at my university, TU-Sofia. Here's the assignment, translated:
     > Given any graph G, create an app that:
