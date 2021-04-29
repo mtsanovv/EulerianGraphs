@@ -103,3 +103,15 @@ A more complex graph with Eulerian cycles:
 6 4
 4 5
 5 0
+
+The graph above, but with 0 as 7:
+7 1
+1 2
+2 7
+2 3
+3 4
+4 2
+7 6
+6 4
+4 5
+5 7

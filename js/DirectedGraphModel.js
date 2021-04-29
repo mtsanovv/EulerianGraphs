@@ -121,8 +121,8 @@ class DirectedGraphModel extends GraphModel {
     }
 
     //a method that implements Hierholzer's algorithm
-    hierholzer(element, checked, subtour, tour, initial) {
-        if(this.completeSubtour(element, subtour, tour)) {
+    hierholzer(element, initial, checked, subtour, tour) {
+        if(!initial && this.completeSubtour(element, subtour, tour)) {
             subtour = [];
         }
 
@@ -137,7 +137,7 @@ class DirectedGraphModel extends GraphModel {
                     subtourSplit.push(...subtour);
                     tourSplit.push(...tour);
                     this.visitEdge(element, this.G[element][i], checked, subtour);
-                    this.hierholzer(newNode, checked, subtour, tour);
+                    this.hierholzer(newNode, false, checked, subtour, tour);
                 } else {
                     //out degree for this vertex is > 0 (or just the degree > 1 in undirected graph), so we need to run hierholzer for that variant too
                     const newChecked = [];
@@ -153,7 +153,7 @@ class DirectedGraphModel extends GraphModel {
                     newSubtour.push(...subtourSplit);
                     this.tours.push([...tourSplit]); //mark a new tour
                     this.visitEdge(element, this.G[element][i], newChecked, newSubtour);
-                    this.hierholzer(this.G[element][i], newChecked, newSubtour, this.tours[this.tours.length - 1]);
+                    this.hierholzer(this.G[element][i], false, newChecked, newSubtour, this.tours[this.tours.length - 1]);
                 }
             }
         }
@@ -172,6 +172,11 @@ class DirectedGraphModel extends GraphModel {
             this.visitEdge(tour[i], tour[i + 1], checked, []); //visit the edges that are part of the tour
         }
         for(let i = 0; i < checked.length; i++) {
+            // if not an array, continue
+            if(!Array.isArray(checked[i])) {
+                continue;
+            }
+
             for(let j = 0; j < checked[i].length; j++) {
                 //if the edge has not been visited by the loop above, then this is surely not a cycle
                 if(checked[i][j] == false) {
@@ -187,7 +192,7 @@ class DirectedGraphModel extends GraphModel {
         for(let i = 0; i < this.G.length; i++) {
             //find all eulerian cycles for each vertex
             if(Array.isArray(this.G[i])) {
-                this.hierholzer(i, [], [], this.tours[this.tours.length - 1], true);
+                this.hierholzer(i, true);
             }
         }
 
