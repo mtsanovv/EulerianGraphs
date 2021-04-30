@@ -2,7 +2,6 @@ class UndirectedGraphModel extends GraphModel {
     constructor(graphInput, sequenceInput, errorField) {
         super(graphInput, sequenceInput, errorField);
         this.tours = [];
-        this.T;
     }
     
     //convert the graph input into an actual graph
@@ -23,7 +22,7 @@ class UndirectedGraphModel extends GraphModel {
             }
             this.G[Number(vertices[1])].push(Number(vertices[0]));
         }
-        if(edges.length > 7) {
+        if(edges.length > config.MAX_EDGES_IN_UNDIRECTED_GRAPH_BEFORE_TOURS_LIMIT) {
             this.limitEulerianTours = true;
         }
         return !Boolean(this.G.length); //return true if it's an edgeless graph
@@ -74,7 +73,7 @@ class UndirectedGraphModel extends GraphModel {
         checked[node2][node1] = true;
     }
 
-    //a method to check if an Eulerian cycle has been found for Hierholzer
+    //a method to check if an Eulerian cycle has been found for Hierholzer (used only when there's tours limit)
     eulerianCycleFound(checked) {
         for(let i = 0; i < checked.length; i++) {
             if(Array.isArray(checked[i])) {
@@ -92,8 +91,7 @@ class UndirectedGraphModel extends GraphModel {
     hierholzer(element, initial, checked, subtour, tour) {
         if(!this.limitEulerianTours) {
             //if no limit to eulerian tours has been applied, use the parent method
-            super.hierholzer(element, initial, checked, subtour, tour);
-            return;
+            return super.hierholzer(element, initial, checked, subtour, tour);
         }
 
         if(this.completeSubtour(element, checked, subtour, tour)) {
@@ -126,8 +124,7 @@ class UndirectedGraphModel extends GraphModel {
     findAllEulerianTours() {
         if(!this.limitEulerianTours) {
             //if no limit to eulerian tours has been applied, use the parent method
-            super.findAllEulerianTours();
-            return;
+            return super.findAllEulerianTours();
         }
         for(let i = 0; i < this.G.length; i++) {
             //find all Еulerian tours for each vertex
@@ -140,7 +137,7 @@ class UndirectedGraphModel extends GraphModel {
         }
     }
 
-    //a method that implements Hierholzer's algorithm for Eulerian paths
+    //a method that implements Hierholzer's algorithm for Eulerian paths (used only when there's tours limit)
     findPath(element, checked) {
         this.tours[this.tours.length - 1].push(element);
         for(let i = 0; i < this.G[element].length; i++) {
@@ -151,8 +148,12 @@ class UndirectedGraphModel extends GraphModel {
         }
     }
 
-    //find all eulerian paths
+    //find all Eulerian paths
     findAllEulerianPaths() {
+        if(!this.limitEulerianTours) {
+            //if no limit to eulerian tours has been applied, use the parent method
+            return super.findAllEulerianPaths();
+        }
         for(let i = 0; i < this.G.length; i++) {
             //find an eulerian path for each vertix with odd degree
             if(Array.isArray(this.G[i]) && this.G[i].length % 2 != 0) {
