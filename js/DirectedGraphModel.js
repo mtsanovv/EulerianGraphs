@@ -22,6 +22,11 @@ class DirectedGraphModel extends GraphModel {
                 this.G[Number(vertices[1])] = [];
             }
 
+            if(this.inDegrees[Number(vertices[0])] === void 0) {
+                //create in degree count for the first node as well
+                this.inDegrees[Number(vertices[0])] = 0;
+            }
+
             if(this.inDegrees[Number(vertices[1])] === void 0) {
                 this.inDegrees[Number(vertices[1])] = 1;
             } else {
@@ -90,18 +95,20 @@ class DirectedGraphModel extends GraphModel {
             }
             if(this.G[i].length == this.inDegrees[i] + 1) {
                 inDegreeMoreThanOutDegreeVertexCount++;
+                continue;
             } else if(this.G[i].length + 1 == this.inDegrees[i]) {
                 outDegreeMoreThanInDegreeVertexCount++;
+                continue;
             } else if(this.G[i].length != this.inDegrees[i]) {
                 //if a vertex is not one of the two "special ones" it should have in degree equal to its out degree
                 return false;
             }
         }
 
-        if(inDegreeMoreThanOutDegreeVertexCount != 1 || outDegreeMoreThanInDegreeVertexCount != 1) {
+        if(inDegreeMoreThanOutDegreeVertexCount > 1 || outDegreeMoreThanInDegreeVertexCount > 1) {
             //A directed graph has an Eulerian path only if:
-            //there's only one vertex for which indegree + 1 == outdegree
-            //there's only one vertex for which outdegree + 1 == indegree
+            //at most there's only one vertex for which indegree + 1 == outdegree
+            //at most there's only one vertex for which outdegree + 1 == indegree
             //all other vertices have indegree == outdegree
             return false;
         }

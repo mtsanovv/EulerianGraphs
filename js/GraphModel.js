@@ -285,7 +285,7 @@ class GraphModel {
         }
     }
 
-    //find all Еulerian cycles
+    //a method that finds all Eulerian cycles using Hierholzer
     findAllEulerianCycles() {
         this.findAllEulerianTours();
 
@@ -299,7 +299,7 @@ class GraphModel {
         return this.tours;
     }
 
-    //find all Еulerian paths
+    //a method that finds all Eulerian paths using Hierholzer
     findAllEulerianPaths() {
         this.findAllEulerianTours();
 

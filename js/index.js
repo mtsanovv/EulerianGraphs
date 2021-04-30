@@ -27,6 +27,7 @@ function createGraph() {
             outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian cycle(s).</li></ul>";
             if(!isEdgelessGraph) {
                 const eulerianCycles = gm.findAllEulerianCycles();
+                
                 let foundString = "<p style='text-align: center;'>";
                 if(gm.limitEulerianTours) {
                     foundString += "<div style='margin-bottom: 5px;'><font style='color: rgb(160, 90, 0);'>Note: not all available Eulerian cycles might have been found in order to get a final result in a reasonable time. <a href='https://en.wikipedia.org/wiki/Eulerian_path#Complexity_issues' target='_blank'>Learn more.</a></font></div>";
@@ -44,7 +45,7 @@ function createGraph() {
         } else {
             outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph G does not have any Eulerian cycles.</li></ul>";
         }
-        if(gm.hasEulerianPath()) {
+        if(gm.hasEulerianPath() && !gm.hasEulerianCycle()) {
             if(gm.verifySequenceInput()) {
                 if(gm.isEulerianPath()) {
                     outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The sequence input P is an Eulerian path.</li></ul>";
@@ -54,6 +55,7 @@ function createGraph() {
             }
             outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian path(s).</li></ul>";
             const eulerianPaths = gm.findAllEulerianPaths();
+            
             let foundString = "<p style='text-align: center;'>";
             if(gm.limitEulerianTours) {
                 foundString += "<div style='margin-bottom: 5px;'><font style='color: rgb(160, 90, 0);'>Note: not all available Eulerian paths might have been found in order to get a final result in a reasonable time. <a href='https://en.wikipedia.org/wiki/Eulerian_path#Complexity_issues' target='_blank'>Learn more.</a></font></div>";

@@ -7,6 +7,7 @@ class UndirectedGraphModel extends GraphModel {
     //convert the graph input into an actual graph
     graphify() {
         const edges = this.graphInput.split(/\n+/);
+        let edgesCount = edges.length;
         for(const edge of edges) {
             const vertices = edge.split(/\s+/);
             if(vertices.length != 2) {
@@ -15,14 +16,26 @@ class UndirectedGraphModel extends GraphModel {
             if(!Array.isArray(this.G[Number(vertices[0])])) {
                 this.G[Number(vertices[0])] = [];
             }
-            this.G[Number(vertices[0])].push(Number(vertices[1]));
+
+            if(this.G[Number(vertices[0])].indexOf(Number(vertices[1])) == -1) {
+                //create the connection between the vertices if only the connection doesn't exist
+                this.G[Number(vertices[0])].push(Number(vertices[1]));
+            } else {
+                edgesCount--;
+            }
 
             if(!Array.isArray(this.G[Number(vertices[1])])) {
                 this.G[Number(vertices[1])] = [];
             }
-            this.G[Number(vertices[1])].push(Number(vertices[0]));
+
+            if(this.G[Number(vertices[1])].indexOf(Number(vertices[0])) == -1) {
+                //create the connection between the vertices if only the connection doesn't exist
+                this.G[Number(vertices[1])].push(Number(vertices[0]));
+            } else {
+                edgesCount--;
+            }
         }
-        if(edges.length > config.MAX_EDGES_IN_UNDIRECTED_GRAPH_BEFORE_TOURS_LIMIT) {
+        if(edgesCount > config.MAX_EDGES_IN_UNDIRECTED_GRAPH_BEFORE_TOURS_LIMIT) {
             this.limitEulerianTours = true;
         }
         return !Boolean(this.G.length); //return true if it's an edgeless graph
