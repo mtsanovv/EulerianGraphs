@@ -1,8 +1,7 @@
 class DirectedGraphModel extends GraphModel {
     constructor(graphInput, sequenceInput, errorField) {
-        super(graphInput, sequenceInput, errorField);
+        super(graphInput, sequenceInput, errorField, true);
         this.inDegrees = [];
-        this.tours = [];
     }
 
     //convert the graph input into an actual graph

@@ -1,9 +1,4 @@
-class UndirectedGraphModel extends GraphModel {
-    constructor(graphInput, sequenceInput, errorField) {
-        super(graphInput, sequenceInput, errorField);
-        this.tours = [];
-    }
-    
+class UndirectedGraphModel extends GraphModel {    
     //convert the graph input into an actual graph
     graphify() {
         const edges = this.graphInput.split(/\n+/);

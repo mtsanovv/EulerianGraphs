@@ -1,11 +1,15 @@
 class GraphModel {
-    constructor(graphInput, sequenceInput, errorField) {
+    constructor(graphInput, sequenceInput, errorField, isDirected) {
         this.graphInput = graphInput;
         this.sequenceInput = sequenceInput;
         this.errorField = errorField;
         this.G = [];
+        this.tours = [];
+        this.isDirected = Boolean(isDirected);
         this.limitEulerianTours = false;
+        this.grapher = new Grapher(this.G, this.tours, this.isDirected);
     }
+
     //verify the graph input
     verifyInput() {
         const edges = this.graphInput.split(/\n+/);
@@ -311,5 +315,10 @@ class GraphModel {
         }
         this.tours = validTours;
         return this.tours;
+    }
+
+    //a method that calls the grapher and draws the graph + cycles and paths
+    grapherDraw() {
+        this.grapher.draw();
     }
 }

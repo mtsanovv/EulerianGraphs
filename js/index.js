@@ -45,6 +45,7 @@ function createGraph() {
         } else {
             outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph G does not have any Eulerian cycles.</li></ul>";
         }
+
         if(gm.hasEulerianPath() && !gm.hasEulerianCycle()) {
             if(gm.verifySequenceInput()) {
                 if(gm.isEulerianPath()) {
@@ -72,5 +73,6 @@ function createGraph() {
         } else {
             outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph G does not have any Eulerian paths.</li></ul>";
         }
+        gm.grapherDraw();
     }
 }
