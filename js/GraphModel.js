@@ -7,7 +7,7 @@ class GraphModel {
         this.tours = [];
         this.isDirected = Boolean(isDirected);
         this.limitEulerianTours = false;
-        this.grapher = new Grapher(this.G, this.tours, this.isDirected);
+        this.grapher = new Grapher(this.G, this.isDirected);
     }
 
     //verify the graph input
@@ -319,6 +319,6 @@ class GraphModel {
 
     //a method that calls the grapher and draws the graph + cycles and paths
     grapherDraw() {
-        this.grapher.draw();
+        this.grapher.draw(this.tours);
     }
 }

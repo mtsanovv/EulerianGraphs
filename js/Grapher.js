@@ -1,17 +1,18 @@
 class Grapher {
-    constructor(G, tours, isDirected) {
+    constructor(G, isDirected) {
         this.G = G;
-        this.tours = tours;
+        this.tours = [];
         this.isDirected = isDirected;
         this.graphRow = document.getElementById('graphRow');
-        this.toursWrapper = document.getElementById('toursWrapper');
     }
 
-    draw() {
-        //show the graph row and reset its and toursWrapper's contents
+    draw(tours) {
+        //set the tours
+        this.tours = tours
+
+        //show the graph row and reset its contents
         this.graphRow.style.display = '';
         this.graphRow.innerHTML = '';
-        this.toursWrapper.innerHTML = '';
 
         if(!this.G.length) {
             //if it's an empty array, just display a simple text that there's nothing to visualize
@@ -19,23 +20,46 @@ class Grapher {
             this.graphRow.innerHTML = '<div style="text-align: center; padding-top: 15px;"><font style="color: rgb(160, 90, 0);1"><ul><li>The graph is edgeless: there is nothing to display.</li></ul></div>';
             return;
         }
-        this.graphRow.style.height = '450px';
-        this.graphRow.innerHTML = '<h3 style="text-align: center; margin-top: 10px; padding-top: 38px; margin-bottom: 0px;">Graph visualization:</h3>';
-        //draw the base graph
-        this.drawGraph(this.graphRow);
-        if(!this.tours.length) {
-            //if there are no tours, just draw the graph, that's it
-            this.toursWrapper.innerHTML = "";
-            return;
+        this.graphRow.style.height = '520px';
+        this.graphRow.innerHTML = '<h3 style="text-align: center; margin-top: 10px; padding-top: 20px; margin-bottom: 20px;">Graph visualization:</h3>';
+        if(this.tours.length) {
+            this.addTourOptions();
         }
+        //draw the base graph
+        this.drawGraph();
     }
 
-    drawGraph(container) {
+    addTourOptions() {
+        const grapher = this;
+        this.graphRow.innerHTML += '<div style="text-align: center;"><label for="tourSelection" style="margin-right: 10px;">Eulerian tour to visualize:</label><select id="tourSelection"><option value="-1">No tour selected</option></select>';
+        const tourDropdown = document.querySelector('#tourSelection');
+        for(let i = 0; i < this.tours.length; i++) {
+            if(Array.isArray(this.tours[i])) {
+                tourDropdown.innerHTML += '<option value="' + i + '">' + this.tours[i].join("➔") + '</option>';
+            }
+        }
+        this.graphRow.innerHTML += '</div>';
+        //we cannot use tourDropdown here because apparently it does not contain its options in a proper way so that addEventListener can be called
+        document.getElementById('tourSelection').addEventListener('change', (event) => {
+            const tourIndex = Number(event.target.value);
+            //remove the old graph
+            if(this.graphRow.lastElementChild.tagName == 'svg') {
+                this.graphRow.removeChild(this.graphRow.lastElementChild);
+            }
 
+            if(tourIndex == -1) {
+                grapher.drawGraph();
+            } else {
+                grapher.drawGraph(this.tours[tourIndex]);
+            }
+        });
+    }
+
+    drawGraph(tour) {
         const graphics = Viva.Graph.View.svgGraphics();
 
         //customize the links
-        if(!this.isDirected) {
+        if(!this.isDirected && !tour) {
             //the graph is not directed (or we're not visualizing a tour)
             //keep it simple
             graphics.link(function(){
@@ -104,18 +128,33 @@ class Grapher {
 
         const nodes = [];
 
-        //populate the graph
-        for(let i = 0; i < this.G.length; i++) {
-            if(Array.isArray(this.G[i])) {
-                for(const anotherNode of this.G[i]) {
-                    if(nodes.indexOf(i) == -1) {
-                        nodes.push(i);
+        if(!tour) {
+            //populate the graph with the data from G
+            for(let i = 0; i < this.G.length; i++) {
+                if(Array.isArray(this.G[i])) {
+                    for(const anotherNode of this.G[i]) {
+                        if(nodes.indexOf(i) == -1) {
+                            nodes.push(i);
+                        }
+                        if(nodes.indexOf(anotherNode) == -1) {
+                            nodes.push(anotherNode);
+                        }
+                        graph.addLink(i, anotherNode);
                     }
-                    if(nodes.indexOf(anotherNode) == -1) {
-                        nodes.push(anotherNode);
-                    }
-                    graph.addLink(i, anotherNode);
                 }
+            }
+        } else {
+            //populate the graph with the data from the tour
+            for(let i = 0; i < tour.length - 1; i++) {
+                const currentElement = tour[i];
+                const nextElement = tour[i + 1];
+                if(nodes.indexOf(currentElement) == -1) {
+                    nodes.push(currentElement);
+                }
+                if(nodes.indexOf(nextElement) == -1) {
+                    nodes.push(nextElement);
+                }
+                graph.addLink(currentElement, nextElement);
             }
         }
 
@@ -150,7 +189,7 @@ class Grapher {
         
         const renderer = Viva.Graph.View.renderer(graph, {
             graphics: graphics,
-            container: container
+            container: this.graphRow
         });
         renderer.run();
     }
