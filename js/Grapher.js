@@ -22,7 +22,7 @@ class Grapher {
         }
         this.graphRow.style.height = '520px';
         this.graphRow.innerHTML = '<h3 style="text-align: center; margin-top: 10px; padding-top: 20px; margin-bottom: 20px;">Graph visualization:</h3>';
-        if(this.tours.length) {
+        if(this.tours.length && !this.isDirected) {
             this.addTourOptions();
         }
         //draw the base graph
