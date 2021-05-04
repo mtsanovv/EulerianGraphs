@@ -19,19 +19,26 @@ class GraphModel {
         }
         for(const edge of edges) {
             const vertices = edge.split(/\s+/);
-            if(vertices.length != 2) {
-                this.errorField.innerText = 'Invalid graph submitted: one of the edges contains more than two space-separated values. Please also check for any extra and/or trailing whitespaces.';
+            if(vertices.length > 2) {
+                this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' contains more than two space-separated values. Check also for any extra and/or trailing whitespaces.";
                 return false;
             } else if(vertices.length == 1 && vertices[0].length == 0) {
-                this.errorField.innerText = 'Invalid graph submitted: one of the edges is empty.';
+                this.errorField.innerText = 'Invalid graph submitted: one of the edges is empty. Check for any extra new lines.';
+                return false;
+            } else if(vertices.length == 2 && vertices[0] == vertices[1]) {
+                this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' cannot exist.";
+                return false;
+            } else if(vertices.length < 2) {
+                this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' contains only one vertex (two are required).";
                 return false;
             }
+
             for(const vertex of vertices) {
                 if(!vertex.length) {
-                    this.errorField.innerText = 'Invalid graph submitted: one of the vertices in one of the edges is empty.';
+                    this.errorField.innerText = "Invalid graph submitted: one of the vertices in the edge '" + edge + "' is missing.";
                     return false;
-                } else if(!vertex.length || !Number.isInteger(Number(vertex))) {
-                    this.errorField.innerText = 'Invalid graph submitted: one of the vertices in one of the edges is not an integer. Please also check for any extra and/or trailing whitespaces.';
+                } else if(!Number.isInteger(Number(vertex))) {
+                    this.errorField.innerText = "Invalid graph submitted: the vertex '" + vertex + "' in the edge '" + edge + "' is not an integer. Check also for any extra and/or trailing whitespaces.";
                     return false;
                 }
             }
@@ -46,10 +53,13 @@ class GraphModel {
         const vertices = this.sequenceInput.split(/\s+/);
         for(const vertex of vertices) {
             if(!vertex.length) {
-                this.errorField.innerText = 'Invalid sequence of vertices submitted: one of the vertices is not an integer. Please also check for any extra and/or trailing whitespaces.';
+                this.errorField.innerText = 'Invalid sequence of vertices submitted: check for any extra and/or trailing whitespaces.';
+                return false;
+            } else if(!Number.isInteger(Number(vertex))) {
+                this.errorField.innerText = "Invalid sequence of vertices submitted: the vertex '" + vertex + "' is not an integer.";
                 return false;
             } else if(!Array.isArray(this.G[Number(vertex)])) {
-                this.errorField.innerText = 'Invalid sequence of vertices submitted: one of the vertices is not a part of the graph.';
+                this.errorField.innerText = "Invalid sequence of vertices submitted: the vertex " +  vertex + " is not a part of the graph.";
                 return false;
             }
         }

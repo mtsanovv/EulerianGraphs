@@ -6,13 +6,24 @@ class Grapher {
         this.graphRow = document.getElementById('graphRow');
     }
 
+    clearGraphRow() {
+        this.graphRow.innerHTML = '';
+    }
+
+    toggleGraphRow(toggle) {
+        if(toggle) {
+            this.graphRow.style.display = '';
+        } else {
+            this.graphRow.style.display = 'none';
+        }
+    }
+
     draw(tours) {
         //set the tours
-        this.tours = tours
+        this.tours = tours;
 
-        //show the graph row and reset its contents
-        this.graphRow.style.display = '';
-        this.graphRow.innerHTML = '';
+        this.toggleGraphRow(true);
+        this.clearGraphRow();
 
         if(!this.G.length) {
             //if it's an empty array, just display a simple text that there's nothing to visualize

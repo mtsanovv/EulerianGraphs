@@ -22,7 +22,7 @@ class DirectedGraphModel extends GraphModel {
             }
 
             if(this.inDegrees[Number(vertices[0])] === void 0) {
-                //create in degree count for the first node as well
+                //create in degree count for the first vertex as well
                 this.inDegrees[Number(vertices[0])] = 0;
             }
 

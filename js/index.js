@@ -53,6 +53,9 @@ function createGraph() {
                 } else {
                     outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The sequence input P is not an Eulerian path.</li></ul>";
                 }
+            } else {
+                //show the error field on path sequence input error
+                toggleComponent(errorField, true);
             }
             outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The graph G contains Eulerian path(s).</li></ul>";
             const eulerianPaths = gm.findAllEulerianPaths();
@@ -73,6 +76,24 @@ function createGraph() {
         } else {
             outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The graph G does not have any Eulerian paths.</li></ul>";
         }
+
+        if(!errorField.innerText.length) {
+            //hide the error field if no text is displayed
+            toggleComponent(errorField, false);
+        }
+
         gm.grapherDraw();
+    } else {
+        //show the error field and hide the graph row on error
+        toggleComponent(errorField, true);
+        gm.grapher.toggleGraphRow(false);
+    }
+}
+
+function toggleComponent(component, toggle) {
+    if(toggle) {
+        component.style.display = '';
+    } else {
+        component.style.display = 'none';
     }
 }

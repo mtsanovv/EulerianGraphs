@@ -25,7 +25,7 @@ A more complex graph for Hierholzer with Eulerian cycle:
 10 11
 11 2
 
-The previous graph, but nodes start from 1:
+The previous graph, but vertices start from 1:
 1 2
 2 3
 3 4
@@ -43,7 +43,7 @@ The previous graph, but nodes start from 1:
 11 12
 12 3
 
-The previous graph but the first node has a value bigger than the one of the last node:
+The previous graph but the first vertex has a value bigger than the one of the last vertex:
 37 1
 1 2
 2 3
