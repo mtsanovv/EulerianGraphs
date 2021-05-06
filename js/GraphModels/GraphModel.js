@@ -19,11 +19,11 @@ class GraphModel {
         for(const edge of edges) {
             const vertices = edge.split(/\s+/);
             if(vertices.length > 2) {
-                this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' contains more than two space-separated values. Check also for any extra and/or trailing whitespaces.";
+                this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' contains more than two space-separated values. Check also for trailing whitespaces.";
                 return false;
             } else if(vertices.length == 1 && vertices[0].length == 0) {
-                this.errorField.innerText = 'Invalid graph submitted: one of the edges is empty. Check for any extra new lines.';
-                return false;
+                //empty edge, continue
+                continue;
             } else if(vertices.length == 2 && vertices[0] == vertices[1]) {
                 this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' cannot exist.";
                 return false;
@@ -37,7 +37,7 @@ class GraphModel {
                     this.errorField.innerText = "Invalid graph submitted: one of the vertices in the edge '" + edge + "' is missing.";
                     return false;
                 } else if(!Number.isInteger(Number(vertex))) {
-                    this.errorField.innerText = "Invalid graph submitted: the vertex '" + vertex + "' in the edge '" + edge + "' is not an integer. Check also for any extra and/or trailing whitespaces.";
+                    this.errorField.innerText = "Invalid graph submitted: the vertex '" + vertex + "' in the edge '" + edge + "' is not an integer.";
                     return false;
                 }
             }

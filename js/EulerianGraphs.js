@@ -11,6 +11,7 @@ class EulerianGraphs {
         this.outputField.innerHTML = '';
     
         if(this.graphModel.verifyInput()) {
+            //convert the graph input into an actual graph
             this.graphModel.graphify();
 
             this.checkForEulerianCycles();
