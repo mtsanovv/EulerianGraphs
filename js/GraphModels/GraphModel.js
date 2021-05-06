@@ -22,7 +22,8 @@ class GraphModel {
                 this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' contains more than two space-separated values. Check also for trailing whitespaces.";
                 return false;
             } else if(vertices.length == 1 && vertices[0].length == 0) {
-                //empty edge, continue
+                //empty edge, continue with the other edges
+                //the graph models are supposed to ignore this edge when parsing the input
                 continue;
             } else if(vertices.length == 2 && vertices[0] == vertices[1]) {
                 this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' cannot exist.";

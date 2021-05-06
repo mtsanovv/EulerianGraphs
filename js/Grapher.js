@@ -24,7 +24,11 @@ class Grapher {
 
         this.toggleGraphRow(true);
         this.clearGraphRow();
+        this.initializeGraphContainer();
+        this.drawGraph();
+    }
 
+    initializeGraphContainer() {
         if(!this.G.length) {
             //if it's an empty array, just display a simple text that there's nothing to visualize
             this.graphRow.style.height = '65px';
@@ -36,8 +40,6 @@ class Grapher {
         if(this.tours.length && !this.isDirected) {
             this.addTourOptions();
         }
-        //draw the base graph
-        this.drawGraph();
     }
 
     addTourOptions() {
@@ -67,78 +69,95 @@ class Grapher {
     }
 
     drawGraph(tour) {
-        const graphics = Viva.Graph.View.svgGraphics();
-
-        //customize the links
-        if(!this.isDirected && !tour) {
-            //the graph is not directed (or we're not visualizing a tour)
-            //keep it simple
-            graphics.link(function(){
-                return Viva.Graph.svg('line')
-                                 .attr('stroke', 'black')
-                                 .attr('stroke-width', '2px');
-            });
-        } else {
-            //create the triangular marker
-            const createMarker = function(id) {
-                return Viva.Graph.svg('marker')
-                                 .attr('id', id)
-                                 .attr('viewBox', "0 0 10 10")
-                                 .attr('refX', "10")
-                                 .attr('refY', "5")
-                                 .attr('markerUnits', "strokeWidth")
-                                 .attr('markerWidth', "10")
-                                 .attr('markerHeight', "5")
-                                 .attr('orient', "auto");
-            },
-            marker = createMarker('Triangle');
-            marker.append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z');
-
-            const defs = graphics.getSvgRoot().append('defs');
-            defs.append(marker);
-            
-
-            const geom = Viva.Graph.geom();
-
-            graphics.link(function(){
-                return Viva.Graph.svg('line')
-                                 .attr('stroke', 'black')
-                                 .attr('stroke-width', '2px')
-                                 .attr('marker-end', 'url(#Triangle)');
-            }).placeLink(function(linkUI, fromPos, toPos) {
-                const nodeSize = config.GRAPH_NODE_RADIUS * 3 / 2 + 2;
-
-                const from = geom.intersectRect(
-                        // rectangle:
-                                fromPos.x - nodeSize / 2, // left
-                                fromPos.y - nodeSize / 2, // top
-                                fromPos.x + nodeSize / 2, // right
-                                fromPos.y + nodeSize / 2, // bottom
-                        // segment:
-                                fromPos.x, fromPos.y, toPos.x, toPos.y)
-                           || fromPos; // if no intersection found - return center of the node
-
-                const to = geom.intersectRect(
-                        // rectangle:
-                                toPos.x - nodeSize / 2, // left
-                                toPos.y - nodeSize / 2, // top
-                                toPos.x + nodeSize / 2, // right
-                                toPos.y + nodeSize / 2, // bottom
-                        // segment:
-                                toPos.x, toPos.y, fromPos.x, fromPos.y)
-                            || toPos; // if no intersection found - return center of the node
-                linkUI.attr('x1', from.x)
-                      .attr('x2', to.x)
-                      .attr('y1', from.y)
-                      .attr('y2', to.y);
-            });
-        }
-
+        this.graphics = Viva.Graph.View.svgGraphics();
 
         const graph = Viva.Graph.graph();
-
         const nodes = [];
 
+        this.createCustomLinks(tour);
+        this.populateGraph(tour, graph, nodes);
+        this.createCustomNodes();
+        
+        this.renderGraph(graph);
+    }
+
+    createCustomLinks(tour) {
+        if(!this.isDirected && !tour) {
+            //the graph is not directed (or we're not visualizing a tour)
+            this.createCustomUndirectedNodeLink();
+        } else {
+            this.createCustomDirectedNodeLink();
+        }
+    }
+
+    createTriangularMarker() {
+        const createMarker = function(id) {
+            return Viva.Graph.svg('marker')
+                             .attr('id', id)
+                             .attr('viewBox', "0 0 10 10")
+                             .attr('refX', "10")
+                             .attr('refY', "5")
+                             .attr('markerUnits', "strokeWidth")
+                             .attr('markerWidth', "10")
+                             .attr('markerHeight', "5")
+                             .attr('orient', "auto");
+        },
+        marker = createMarker('Triangle');
+        marker.append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z');
+
+        const defs = this.graphics.getSvgRoot().append('defs');
+        defs.append(marker);
+    }
+
+    createCustomUndirectedNodeLink() {
+        this.graphics.link(function(){
+            return Viva.Graph.svg('line')
+                             .attr('stroke', 'black')
+                             .attr('stroke-width', '2px');
+        });
+    }
+
+    createCustomDirectedNodeLink() {
+        const geom = Viva.Graph.geom();
+
+        this.createTriangularMarker();
+
+        this.graphics.link(function(){
+            return Viva.Graph.svg('line')
+                             .attr('stroke', 'black')
+                             .attr('stroke-width', '2px')
+                             .attr('marker-end', 'url(#Triangle)');
+        }).placeLink(function(linkUI, fromPos, toPos) {
+            const nodeSize = config.GRAPH_NODE_RADIUS * 3 / 2 + 2;
+            
+            //we have to shorten the link to point the node outlines
+            const from = geom.intersectRect(
+                    // rectangle:
+                            fromPos.x - nodeSize / 2, // left
+                            fromPos.y - nodeSize / 2, // top
+                            fromPos.x + nodeSize / 2, // right
+                            fromPos.y + nodeSize / 2, // bottom
+                    // segment:
+                            fromPos.x, fromPos.y, toPos.x, toPos.y)
+                       || fromPos; // if no intersection found - return center of the node
+
+            const to = geom.intersectRect(
+                    // rectangle:
+                            toPos.x - nodeSize / 2, // left
+                            toPos.y - nodeSize / 2, // top
+                            toPos.x + nodeSize / 2, // right
+                            toPos.y + nodeSize / 2, // bottom
+                    // segment:
+                            toPos.x, toPos.y, fromPos.x, fromPos.y)
+                        || toPos; // if no intersection found - return center of the node
+            linkUI.attr('x1', from.x)
+                  .attr('x2', to.x)
+                  .attr('y1', from.y)
+                  .attr('y2', to.y);
+        });
+    }
+
+    populateGraph(tour, graph, nodes) {
         if(!tour) {
             //populate the graph with the data from G
             for(let i = 0; i < this.G.length; i++) {
@@ -172,10 +191,11 @@ class Grapher {
         for(const node of nodes) {
             graph.addNode(node, node);
         }
+    }
 
-        //custom nodes:
-        graphics.node(function(node) {
-            // node.data holds custom object passed to graph.addNode():
+    createCustomNodes() {
+        this.graphics.node(function(node) {
+            // node.data holds the second argument passed to graph.addNode(), which in our case is an integer - the number of the node:
             const g = Viva.Graph.svg('g');
             const circle = Viva.Graph.svg('circle')
                                      .attr('fill', '#fff')
@@ -190,16 +210,15 @@ class Grapher {
             g.append(circle);
             g.append(number);
             return g;
-        });
-
-        //custom nodes positioning:
-        graphics.placeNode(function(nodeUI, pos) {
-            //g doesn't have x or y, so we have to deal with transform
+        }).placeNode(function(nodeUI, pos) {
+            //the svg object g doesn't have x or y, so we have to deal with transform
             nodeUI.attr('transform', 'translate(' + (pos.x) + ',' + (pos.y) + ')');
         });
-        
+    }
+
+    renderGraph(graph) {
         const renderer = Viva.Graph.View.renderer(graph, {
-            graphics: graphics,
+            graphics: this.graphics,
             container: this.graphRow
         });
         renderer.run();
