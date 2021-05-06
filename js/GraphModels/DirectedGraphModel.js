@@ -1,4 +1,5 @@
 class DirectedGraphModel extends GraphModel {
+
     constructor(graphInput, sequenceInput, errorField) {
         super(graphInput, sequenceInput, errorField, true);
         this.inDegrees = [];
@@ -32,10 +33,8 @@ class DirectedGraphModel extends GraphModel {
                 this.inDegrees[Number(vertices[1])]++;
             }
         }
-        return !Boolean(this.G.length); //return true if it's an edgeless graph
     }
 
-    //a method that returns a transpose of the graph
     transposeGraph() {
         const tG = [];
         for(let i = 0; i < this.G.length; i++) {
@@ -52,7 +51,6 @@ class DirectedGraphModel extends GraphModel {
         return tG;
     }
 
-    //check if the graph is strongly connected
     isStronglyConnected() {
         //dfs the original graph, all edges should be visited
         if(!this.verticesConnected()) {
@@ -68,7 +66,6 @@ class DirectedGraphModel extends GraphModel {
         return true;
     }
 
-    //check if there is at least one Eulerian cycle in the graph
     hasEulerianCycle() {
         if(!this.isStronglyConnected()) {
             return false;
@@ -83,8 +80,7 @@ class DirectedGraphModel extends GraphModel {
 
         return true;
     }
-
-    //a method that checks if there's at least one Eulerian path in the graph
+    
     hasEulerianPath() {
         let inDegreeMoreThanOutDegreeVertexCount = 0;
         let outDegreeMoreThanInDegreeVertexCount = 0;

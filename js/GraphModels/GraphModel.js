@@ -10,7 +10,6 @@ class GraphModel {
         this.grapher = new Grapher(this.G, this.isDirected);
     }
 
-    //verify the graph input
     verifyInput() {
         const edges = this.graphInput.split(/\n+/);
         if(edges.length == 0 || (edges.length == 1 && edges[0].length == 0)) {
@@ -45,7 +44,7 @@ class GraphModel {
         }
         return true;
     }
-    //verify the sequence input
+
     verifySequenceInput() {
         if(!this.sequenceInput.length) {
             return false; //do not display any error, it's fine, it's an optional parameter
@@ -66,7 +65,11 @@ class GraphModel {
         return true;
     }
 
-    //implement the depth-first search to traverse the graph
+    isEdgeless() {
+        return !Boolean(this.G.length);
+    }
+
+    //implementation of the depth-first search to traverse the graph
     dfs(root, checked, anotherG) {
         let G = this.G;
         if(anotherG) {
@@ -197,27 +200,31 @@ class GraphModel {
                     this.visitEdge(element, this.G[element][i], checked, subtour);
                     this.hierholzer(newNode, false, checked, subtour, tour);
                 } else {
-                    //out degree for this vertex is > 0 (or just the degree > 1 in undirected graph), so we need to run hierholzer for that variant too
-                    const newChecked = [];
-                    const newSubtour = [];
-                    this.markAllUnvisited(newChecked);
-                    //mark as visited the visited edges so far (both from the subtour and the subtour)
-                    for(let j = 0; j < tourSplit.length - 1; j++) {
-                        this.visitEdge(tourSplit[j], tourSplit[j + 1], newChecked, []);
-                    }
-                    for(let j = 0; j < subtourSplit.length - 1; j++) {
-                        this.visitEdge(subtourSplit[j], subtourSplit[j + 1], newChecked, []);
-                    }
-                    newSubtour.push(...subtourSplit);
-                    this.tours.push([...tourSplit]); //mark a new tour
-                    this.visitEdge(element, this.G[element][i], newChecked, newSubtour);
-                    this.hierholzer(this.G[element][i], false, newChecked, newSubtour, this.tours[this.tours.length - 1]);
+                    this.splitTourOnVertex(subtourSplit, tourSplit, element, i);
                 }
             }
         }
     }
 
-    //function to check if the tour is an Eulerian cycle
+    //a helper method for Hierholzer's algorithm when the tour has to be split to multiples of it
+    splitTourOnVertex(subtourSplit, tourSplit, node1, indexOfNode2) {
+        //out degree for this vertex is > 0 (or just the degree > 1 in undirected graph), so we need to run Hierholzer for that variant too
+        const newChecked = [];
+        const newSubtour = [];
+        this.markAllUnvisited(newChecked);
+        //mark as visited the visited edges so far (both from the subtour and the subtour)
+        for(let j = 0; j < tourSplit.length - 1; j++) {
+            this.visitEdge(tourSplit[j], tourSplit[j + 1], newChecked, []);
+        }
+        for(let j = 0; j < subtourSplit.length - 1; j++) {
+            this.visitEdge(subtourSplit[j], subtourSplit[j + 1], newChecked, []);
+        }
+        newSubtour.push(...subtourSplit);
+        this.tours.push([...tourSplit]); //mark a new tour
+        this.visitEdge(node1, this.G[node1][indexOfNode2], newChecked, newSubtour);
+        this.hierholzer(this.G[node1][indexOfNode2], false, newChecked, newSubtour, this.tours[this.tours.length - 1]);
+    }
+
     isEulerianCycle(tour) {
         const checked = [];
         this.markAllUnvisited(checked);
@@ -245,7 +252,6 @@ class GraphModel {
         return true;
     }
 
-    //check if the path in the sequence input is actually Eulerian
     isEulerianPath(passedP) {
         if(!this.hasEulerianPath()) {
             return false; //no point to check if there's no chance of Eulerian paths
