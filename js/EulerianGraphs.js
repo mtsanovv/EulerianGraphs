@@ -59,9 +59,9 @@ class EulerianGraphs {
     validatePathInput() {
         if(this.graphModel.verifySequenceInput()) {
             if(this.graphModel.isEulerianPath()) {
-                this.outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The sequence input P is an Eulerian path.</li></ul>";
+                this.outputField.innerHTML += "<ul><li style='color: rgb(6, 116, 3);'>The sequence of vertices P is an Eulerian path.</li></ul>";
             } else {
-                this.outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The sequence input P is not an Eulerian path.</li></ul>";
+                this.outputField.innerHTML += "<ul><li style='color: rgb(201, 0, 0);'>The sequence of vertices P is not an Eulerian path.</li></ul>";
             }
         } else {
             //show the error field on path sequence input error
