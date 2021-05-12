@@ -19,7 +19,7 @@ class GraphModel {
         for(const edge of edges) {
             const vertices = edge.split(/\s+/);
             if(vertices.length > 2) {
-                this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' contains more than two space-separated values. Check also for trailing whitespaces.";
+                this.errorField.innerText = "Invalid graph submitted: the edge '" + edge + "' contains more than two space-separated values. Check also for any extra and/or trailing whitespaces.";
                 return false;
             } else if(vertices.length == 1 && vertices[0].length == 0) {
                 //empty edge, continue with the other edges

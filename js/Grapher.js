@@ -43,7 +43,6 @@ class Grapher {
     }
 
     addTourOptions() {
-        const grapher = this;
         this.graphRow.innerHTML += '<div style="text-align: center;"><label for="tourSelection" style="margin-right: 10px;">Eulerian tour to visualize:</label><select id="tourSelection"><option value="-1">No tour selected</option></select>';
         const tourDropdown = document.querySelector('#tourSelection');
         for(let i = 0; i < this.tours.length; i++) {
@@ -52,11 +51,14 @@ class Grapher {
             }
         }
         this.graphRow.innerHTML += '</div>';
-        //we cannot use tourDropdown here because apparently it does not contain its options in a proper way so that addEventListener can be called
+    }
+
+    addTourOptionsChangeListener() {
+        const grapher = this;
         document.getElementById('tourSelection').addEventListener('change', (event) => {
             const tourIndex = Number(event.target.value);
             //remove the old graph
-            if(this.graphRow.lastElementChild.tagName == 'svg') {
+            if(this.graphRow.lastElementChild.id == 'graphVisualization') {
                 this.graphRow.removeChild(this.graphRow.lastElementChild);
             }
 
@@ -65,6 +67,8 @@ class Grapher {
             } else {
                 grapher.drawGraph(this.tours[tourIndex]);
             }
+
+            document.getElementById('tourSelection').value = tourIndex;
         });
     }
 
@@ -217,10 +221,13 @@ class Grapher {
     }
 
     renderGraph(graph) {
+        this.graphRow.innerHTML += '<div id="graphVisualization" style="height: 100%;"></div>';
         const renderer = Viva.Graph.View.renderer(graph, {
             graphics: this.graphics,
-            container: this.graphRow
+            container: document.getElementById("graphVisualization")
         });
         renderer.run();
+
+        this.addTourOptionsChangeListener();
     }
 }
